@@ -28,7 +28,7 @@ const registerUser = async (req, res) => {
       user = await userModel.create({
         fullname,
         email,
-        password:hashPassword,
+        password: hashPassword,
         accountType,
         companyName,
         emailToken: crypto.randomBytes(64).toString("hex"),
@@ -37,17 +37,20 @@ const registerUser = async (req, res) => {
       user = await userModel.create({
         fullname,
         email,
-        password:hashPassword,
+        password: hashPassword,
         accountType,
         emailToken: crypto.randomBytes(64).toString("hex"),
       });
     }
 
-    sendTransporter(user)
+    sendTransporter(user);
 
     return res
       .status(200)
-      .json({ message: "Email verification has been sent successfully",emailToken:user.emailToken });
+      .json({
+        message: "Email verification has been sent successfully",
+        emailToken: user.emailToken,
+      });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -64,7 +67,8 @@ const loginUser = async (req, res) => {
     const user = await userModel.findOne({ email });
     if (!user) return res.status(400).json({ message: "Invalid Email" });
 
-    if(!user.emailVerified) return res.status(400).json({ message: "Email has not been verified" });
+    if (!user.emailVerified)
+      return res.status(400).json({ message: "Email has not been verified" });
 
     // match the password
     const passwordMatch = await bcrypt.compare(password, user.password);
@@ -82,10 +86,11 @@ const loginUser = async (req, res) => {
     return res.status(200).json({
       success: true,
       token: token,
+      user,
       message: "You have logged in successfully",
     });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -124,10 +129,10 @@ const verifyUser = async (req, res) => {
       }
     );
 
-    return res.status(200).json({user,token})
+    return res.status(200).json({ user, token });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
 
-module.exports = { registerUser, loginUser, getUser,verifyUser };
+module.exports = { registerUser, loginUser, getUser, verifyUser };
