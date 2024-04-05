@@ -35,8 +35,13 @@ const createProduct = async (req, res) => {
       sellerId,
     });
 
-    // add productid in sellers accounta
-    await usersModel.findByIdAndUpdate(sellerId, { products: [product._id] });
+    // Get existing product IDs from seller's account
+    const existingProducts = user.products || [];
+    // Add new product ID to the array
+    const updatedProducts = [...existingProducts, product._id];
+
+    // Update seller's account with the new array of product IDs
+    await usersModel.findByIdAndUpdate(sellerId, { products: updatedProducts });
 
     return res.status(200).json({
       success: true,
@@ -122,4 +127,9 @@ const getAllProducts = async (req, res) => {
   }
 };
 
-module.exports = { createProduct, getProducts,getAllProducts,getFeaturedProducts };
+module.exports = {
+  createProduct,
+  getProducts,
+  getAllProducts,
+  getFeaturedProducts,
+};
