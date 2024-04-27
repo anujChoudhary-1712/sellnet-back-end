@@ -14,12 +14,12 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  emailVerified:{
-    type:Boolean,
-    default:false
+  emailVerified: {
+    type: Boolean,
+    default: false,
   },
-  emailToken:{
-    type:String
+  emailToken: {
+    type: String,
   },
   password: {
     type: String,
@@ -29,10 +29,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  products:[{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"products"
-  }]
+  products: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "products",
+    },
+  ],
+  cartItems: [{ type: mongoose.Schema.Types.ObjectId, ref: "products" }],
 });
 
 const usersModel = mongoose.model("users", userSchema);

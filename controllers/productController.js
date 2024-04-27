@@ -1,3 +1,4 @@
+const ProductModel = require("../models/productModel");
 const productModel = require("../models/productModel");
 const usersModel = require("../models/userModel");
 
@@ -127,9 +128,33 @@ const getAllProducts = async (req, res) => {
   }
 };
 
+const getSingleProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const product = await ProductModel.findById(id);
+    if (!product) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    return res
+      .status(200)
+      .json({
+        success: true,
+        message: "Product fetched successfully",
+        data: { content: product },
+      });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   createProduct,
   getProducts,
   getAllProducts,
   getFeaturedProducts,
+  getSingleProduct
 };
